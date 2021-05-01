@@ -175,8 +175,7 @@ jobs:
       - run:
           name: installing curl
           command: |
-            sudo apt update
-            sudo apt install curl
+            apk add curl
       - run:
           name: getting inventory from memstash
           command: |

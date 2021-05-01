@@ -173,6 +173,11 @@ jobs:
       - add_ssh_keys:
           fingerprints: [74:f8:5c:49:4c:8e:f7:4d:db:6b:e1:81:9a:95:c6:a8]
       - run:
+          name: installing curl
+          command: |
+            sudo apt update
+            sudo apt install curl
+      - run:
           name: getting inventory from memstash
           command: |
             curl -H "Content-Type: text/plain" \

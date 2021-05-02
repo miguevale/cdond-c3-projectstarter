@@ -32,8 +32,8 @@
 
 - name: Transfer backend files cloud server
   copy:
-    src: /root/project/dist.tar.gz
-    dest: /home/ubuntu/
+    src: /root/project/backend/dist.tar.gz
+    dest: /home/ubuntu
 
 - name: Extract backend
   shell: |

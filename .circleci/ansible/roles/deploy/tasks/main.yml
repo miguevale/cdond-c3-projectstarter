@@ -1,3 +1,18 @@
+- name: "install dependencies."
+  become: true
+  apt:
+    name: ['nodejs', 'npm']
+    state: latest
+    update_cache: yes
+
+- name: "install pm2"
+  become: true
+  npm:
+    name: pm2
+    global: yes
+    state: present
+    production: yes
+
 - name: Creates directory
   file:
     path: /home/ubuntu/backend
@@ -6,19 +21,20 @@
 - name: Transfer backend files cloud server
   copy:
     src: /root/project/backend
-    dest: /home/ubuntu/
+    dest: /home/ubuntu
 
 - name: "Update npm"
   become: true
   shell: |
     cd /home/ubuntu/backend
     npm install -g npm@latest
+
 - name: "install package dependencies"
   become: true
   shell: |
-    cd /home/ubuntu/backend   
-    ls -la
+    cd /home/ubuntu/backend
     npm install
+
 - name: "build package"
   become: true
   shell: |
@@ -30,4 +46,3 @@
   shell: |
     cd /home/ubuntu/backend
     pm2 start npm --name backend -- start
-    pm2 ls

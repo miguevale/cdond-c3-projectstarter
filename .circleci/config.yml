@@ -279,6 +279,7 @@ jobs:
             apk add --update nodejs
             apk add --update npm
             apk add --update curl
+            apk add --no-cache tar
             pip3 install awscli
 
       - run:
@@ -288,6 +289,8 @@ jobs:
             npm install -g npm@latest
             npm install
             npm run build
+            cd ..
+            tar -czfv backend.tar.gz backend
 
       - run:
           name: getting inventory from memstash

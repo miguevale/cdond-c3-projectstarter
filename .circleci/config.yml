@@ -290,7 +290,7 @@ jobs:
             npm install
             npm run build
             cd ..
-            tar -czfv backend.tar.gz backend
+            tar -czvf backend.tar.gz backend
 
       - run:
           name: getting inventory from memstash

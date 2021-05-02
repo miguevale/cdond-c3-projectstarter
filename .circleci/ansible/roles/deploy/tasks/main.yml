@@ -26,20 +26,24 @@
 - name: Extract backend
   shell: |
     cd /home/ubuntu
-    tar -xsvf backend.tar.gz -C /backend
+    tar -xvf backend.tar.gz
     rm -rf backend.tar.gz
+#    cd backend
+#    cp package* ./dist
+#    cd dist
+#    npm i
+    
+- name: "Update npm"
+  become: true
+  shell: |
+    cd /home/ubuntu/backend
+    npm install -g npm@latest
 
-#- name: "Update npm"
-#  become: true
-#  shell: |
-#    cd /home/ubuntu/backend
-#    npm install -g npm@latest
-#
-#- name: "install package dependencies"
-#  become: true
-#  shell: |
-#    cd /home/ubuntu/backend
-#    npm install
+- name: "install package dependencies"
+  become: true
+  shell: |
+    cd /home/ubuntu/backend
+    npm install
 #
 #- name: "build package"
 #  become: true
@@ -51,4 +55,4 @@
   become: true
   shell: |
     cd /home/ubuntu/backend
-    pm2 start npm --name backend -- start
+    pm2 start main.js --update-env

@@ -1,14 +1,13 @@
 - name: "set variables"
   become: true
   shell: |
-    export ENVIRONMENT=production
-    export TYPEORM_CONNECTION="{{ lookup('env','TYPEORM_CONNECTION') }}"
+    export TYPEORM_CONNECTION=postgres
     export TYPEORM_ENTITIES="./modules/domain/**/*.entity*.{ts,js}"
-    export TYPEORM_HOST="{{ lookup('env','TYPEORM_HOST') }}"
-    export TYPEORM_PORT="{{ lookup('env','TYPEORM_PORT') }}"
-    export TYPEORM_USERNAME="{{ lookup('env','TYPEORM_USERNAME') }}"
-    export TYPEORM_PASSWORD="{{ lookup('env','TYPEORM_PASSWORD') }}"
-    export TYPEORM_DATABASE="{{ lookup('env','TYPEORM_DATABASE') }}"
+    export TYPEORM_HOST=udacity.coa7mebarrii.us-east-1.rds.amazonaws.com
+    export TYPEORM_PORT=5432
+    export TYPEORM_USERNAME=mike
+    export TYPEORM_PASSWORD=aurora123
+    export TYPEORM_DATABASE=udacity
     export TYPEORM_MIGRATIONS=.src/migrations/*.ts
 
 - name: "install dependencies."
@@ -28,24 +27,19 @@
 
 - name: Creates directory
   file:
-    path: /home/ubuntu/backend
+    path: /home/ubuntu/dist
     state: directory
 
 - name: Transfer backend files cloud server
   copy:
-    src: /root/project/backend.tar.gz
-    dest: /home/ubuntu/backend.tar.gz
+    src: /root/project/dist.tar.gz
+    dest: /home/ubuntu/
 
 - name: Extract backend
   shell: |
     cd /home/ubuntu
-    tar -xvf backend.tar.gz
-    rm -rf backend.tar.gz
-    cd backend
-    npm install -g npm@latest
-    cp package* ./dist
-    cd dist
-    npm i
+    tar -xf dist.tar.gz
+    rm -rf dist.tar.gz
     
 #- name: "Update npm"
 #  become: true
@@ -68,5 +62,5 @@
 - name: Executing node
   become: true
   shell: |
-    cd /home/ubuntu/backend/dist
+    cd /home/ubuntu/dist
     pm2 start main.js --update-env

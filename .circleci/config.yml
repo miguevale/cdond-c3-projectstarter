@@ -215,23 +215,13 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            echo ENVIROMENT=$ENVIROMENT > ".env"
-            echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> ".env"
-            echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> ".env"
-            echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> ".env"
-            echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> ".env"
-            echo TYPEORM_HOST=$TYPEORM_HOST >> ".env"
-            echo TYPEORM_PORT=$TYPEORM_PORT >> ".env"
-            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
-            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
-            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
             npm install
             npm run migrations >> migrations_text.txt
       - run:
           name: Send migration results to memstash
           command: |
             cd backend
-            if grep -q 'has been executed succesfully.' migrations_text.txt
+            if grep -q 'has been executed successfully.' migrations_text.txt
             then
               curl -H "Content-Type: text/plain" -H \
               "token: 467a673b-2aac-46fd-b5e5-ab8c86e6bd78" \

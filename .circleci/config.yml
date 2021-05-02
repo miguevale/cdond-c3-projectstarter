@@ -280,6 +280,15 @@ jobs:
             apk add --update npm
             apk add --update curl
             pip3 install awscli
+
+      - run:
+          name: building backend
+          command: |
+            cd backend
+            npm install -g npm@latest
+            npm install
+            npm run build
+
       - run:
           name: getting inventory from memstash
           command: |
@@ -288,11 +297,14 @@ jobs:
             --request GET https://api.memstash.io/values/url_${CIRCLE_WORKFLOW_ID:0:7} \
             >> .circleci/ansible/inventory.txt
             cat .circleci/ansible/inventory.txt
+      
       - run:
           name: Deploy backend
           command: |
             cd .circleci/ansible
             ansible-playbook -i inventory.txt deploy-backend.yml
+          no_output_timeout: 30m
+
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}  
 #

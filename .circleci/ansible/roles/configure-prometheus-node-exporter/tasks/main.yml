@@ -1,16 +1,3 @@
-- name: "set variables"
-  become: true
-  shell:
-    export ENVIRONMENT=production
-    export TYPEORM_CONNECTION="{{ lookup('env','TYPEORM_CONNECTION') }}"
-    export TYPEORM_ENTITIES="./modules/domain/**/*.entity*.{ts,js}"
-    export TYPEORM_HOST="{{ lookup('env','TYPEORM_HOST') }}"
-    export TYPEORM_PORT="{{ lookup('env','TYPEORM_PORT') }}"
-    export TYPEORM_USERNAME="{{ lookup('env','TYPEORM_USERNAME') }}"
-    export TYPEORM_PASSWORD="{{ lookup('env','TYPEORM_PASSWORD') }}"
-    export TYPEORM_DATABASE="{{ lookup('env','TYPEORM_DATABASE') }}"
-    export TYPEORM_MIGRATIONS=.src/migrations/*.ts
-    
 - name: "install node exporter."
   unarchive:
     src: https://github.com/prometheus/node_exporter/releases/download/v0.17.0/node_exporter-0.17.0.linux-amd64.tar.gz

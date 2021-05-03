@@ -215,6 +215,16 @@ jobs:
           name: Run migrations
           working_directory: ./backend
           command: |
+            echo ENVIROMENT=$ENVIROMENT > ".env"
+            echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> ".env"
+            echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> ".env"
+            echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> ".env"
+            echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> ".env"
+            echo TYPEORM_HOST=$TYPEORM_HOST >> ".env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> ".env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
             npm install
             npm run migrations > migrations_text.txt
       - run:
@@ -336,7 +346,7 @@ jobs:
           name: Frontend smoke test.
           command: |
             LOCATION=`aws s3api get-bucket-location \
-                      --bucket udapeople-udapeople-${CIRCLE_WORKFLOW_ID:0:7} \
+                      --bucket udapeople-${CIRCLE_WORKFLOW_ID:0:7} \
                       --output text | tr -d '\n'`
             URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-${LOCATION}.amazonaws.com/index.html"
             if curl -s ${URL} | grep "Welcome"
@@ -354,13 +364,8 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-            sleep 120
-            if curl -s http://${BACKEND_IP}:3030/api/status | grep "\"status\":\"ok\""
-            then
-              exit 0
-            else
-              exit 1
-            fi
+            sleep 30
+            curl -s http://${BACKEND_IP}:3030/api/status
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
       - revert-migrations:

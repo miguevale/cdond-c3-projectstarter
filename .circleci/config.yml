@@ -338,9 +338,9 @@ jobs:
             TEST=`curl -s http://${BACKEND_IP}:3030/api/status`
             if echo $TEST | grep "\"status\":\"ok\""
             then
-              return 0
+              exit 0
             else
-              return 1
+              exit 1
             fi
       - run:
           name: Frontend smoke test.
@@ -352,9 +352,9 @@ jobs:
             TEST=`curl -s ${URL} | grep "Welcome"`
             if echo $TEST | grep "Welcome"
             then
-              echo 0
+              exit 0
             else
-              echo 1
+              exit 1
             fi
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}   

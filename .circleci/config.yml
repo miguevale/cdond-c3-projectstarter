@@ -336,11 +336,11 @@ jobs:
           name: Backend smoke test.
           command: |
             TEST=`curl -s http://${BACKEND_IP}:3030/api/status`
-            if echo $TEST | grep grep "\"status\":\"ok\""
+            if echo $TEST | grep "\"status\":\"ok\""
             then
-              exit 0
+              return 0
             else
-              exit 1
+              return 1
             fi
       - run:
           name: Frontend smoke test.
@@ -352,13 +352,13 @@ jobs:
             TEST=`curl -s ${URL} | grep "Welcome"`
             if echo $TEST | grep "Welcome"
             then
-              exit 0
+              echo 0
             else
-              exit 1
+              echo 1
             fi
-#      - destroy-environment:
-#          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}   
-#
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}   
+
   #cloudfront-update:
   #  docker:
   #    # Docker image here that supports AWS CLI

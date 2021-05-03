@@ -21,20 +21,20 @@ commands:
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
-      # Add parameter here     
+      workflow_id:
+        type: string     
     steps:
       - run:
           name: Revert migrations
-          # Add when this will run
+          when: on_fail
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS = 1
+            SUCCESS = `curl -H "token: << parameters.workflow_id >>" --request GET https://api.memstash.io/values/migration_<< parameters.workflow_id >>`
             if(( $SUCCESS==1 )); 
             then
-            #  cd ~/project/backend
-            #  npm install
-            #  Add revert code here. You can find this in the Getting Started section.
-              exit 1
+              cd backend
+              npm install
+              npm run migrations:revert
             fi
             
 jobs:
@@ -232,7 +232,9 @@ jobs:
               --request PUT --data "0" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
             fi
       - destroy-environment:
-          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}     
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}    
+      - revert-migrations:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}    
 
   deploy-frontend:
     docker:
@@ -263,7 +265,9 @@ jobs:
             npm run build
             aws s3 sync dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}
       - destroy-environment:
-          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}        
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}         
                     
   deploy-backend:
     docker:
@@ -312,6 +316,8 @@ jobs:
           no_output_timeout: 30m
 
       - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}  
 #
   smoke-test:
@@ -327,21 +333,6 @@ jobs:
             rm -rf /car/cache/apk/*
             aws --version 
       - run:
-          name: Get backend url
-          command: |
-            BACKEND_IP=`curl -H "Content-Type: text/plain" \
-            -H "token: 2efd54dc-5d4b-4bf7-ae21-1548a9e7fb40" \
-            --request GET https://api.memstash.io/values/url_${CIRCLE_WORKFLOW_ID:0:7}`
-      - run:
-          name: Backend smoke test.
-          command: |
-            if curl -s http://${BACKEND_IP}:3030/api/status | grep "\"status\":\"ok\""
-            then
-              exit 0
-            else
-              exit 1
-            fi
-      - run:
           name: Frontend smoke test.
           command: |
             LOCATION=`aws s3api get-bucket-location \
@@ -354,8 +345,26 @@ jobs:
             else
               exit 1
             fi
+      - run:
+          name: Get backend url
+          command: |
+            BACKEND_IP=`curl -H "Content-Type: text/plain" \
+            -H "token: 2efd54dc-5d4b-4bf7-ae21-1548a9e7fb40" \
+            --request GET https://api.memstash.io/values/url_${CIRCLE_WORKFLOW_ID:0:7}`
+      - run:
+          name: Backend smoke test.
+          command: |
+            sleep 120
+            if curl -s http://${BACKEND_IP}:3030/api/status | grep "\"status\":\"ok\""
+            then
+              exit 0
+            else
+              exit 1
+            fi
       - destroy-environment:
-          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}   
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}     
 
   #cloudfront-update:
   #  docker:

@@ -336,11 +336,11 @@ jobs:
           name: Backend smoke test.
           command: |
             TEST=`curl -s http://${BACKEND_IP}:3030/api/status`
-            if echo $TEST | grep "\"status\":\"ok\""
+            if $TEST | grep "\"status\":\"ok\""
             then
-              exit 0
+              return 0
             else
-              exit 1
+              return 1
             fi
       - run:
           name: Frontend smoke test.
@@ -350,11 +350,11 @@ jobs:
                       --output text | tr -d '\n'`
             URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-${LOCATION}.amazonaws.com/index.html"
             TEST=`curl -s ${URL} | grep "Welcome"`
-            if echo $TEST | grep "Welcome"
+            if $TEST | grep "Welcome"
             then
-              exit 0
+              return 0
             else
-              exit 1
+              return 1
             fi
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}   

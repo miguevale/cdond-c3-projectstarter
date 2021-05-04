@@ -354,7 +354,6 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-            sleep 5m
             BACKEND_IP=`curl -H "Content-Type: text/plain" \
             -H "token: 2efd54dc-5d4b-4bf7-ae21-1548a9e7fb40" \
             --request GET https://api.memstash.io/values/url_${CIRCLE_WORKFLOW_ID:0:7}`

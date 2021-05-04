@@ -257,7 +257,7 @@ jobs:
             curl -sL https://rpm.nodesource.com/setup_lts.x | bash -
             yum -y install nodejs
       - run:
-          name: Get backend url
+          name: Deploy frontend objects
           command: |
             cd frontend
             export BACKEND_IP=$(aws ec2 describe-instances \
@@ -267,10 +267,6 @@ jobs:
             --output text)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}" >> ".env" 
-      - run:
-          name: Deploy frontend objects
-          command: |
-            cd frontend
             npm install
             npm run build
             aws s3 sync dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}

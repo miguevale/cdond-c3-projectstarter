@@ -1,0 +1,5 @@
+https://github.com/miguevale/cdond-c3-projectstarter
+http://udapeople-51ab3ee.s3-website-us-east-1.amazonaws.com
+http://d38gk4hzri7rdd.cloudfront.net
+http://ec2-54-234-39-1.compute-1.amazonaws.com:3030/api/status
+http://ec2-18-205-149-252.compute-1.amazonaws.com:9090
